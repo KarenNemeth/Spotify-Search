@@ -14,18 +14,20 @@ $(document).ready(function() {
         $("#resultsContainer").css({"display": "block"});
         searchTerm = $('#searchTerm').val();
         type = $('#select').val();
-        console.log(searchTerm);
-        console.log(type);
         encodedSearch = encodeURIComponent(searchTerm);
         spotify_url = 'https://api.spotify.com/v1/search?q='+encodedSearch+'&offset=0&type='+type;
-        $("#message").html('Results for the ' + type + ' named "' + searchTerm + '"');
 
         $.ajax({
             url: spotify_url,
             method: 'GET',
             success: function load(data) {
                 $.each(data, function(key, value){
-                    console.log(data);
+                    if (this.items.length == 0) {
+                        $("#message").html("No results found for " + searchTerm);
+                        return;
+                    } else {
+                        $("#message").html('Results for the ' + type + ' named "' + searchTerm + '"');
+                    }
                     $.each(this.items, function(id, val){
                         var li = $("<li>").attr('id', 'resultItem').appendTo('#results');
                         if (val.images[0] == undefined) {
